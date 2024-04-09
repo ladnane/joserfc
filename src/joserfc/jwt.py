@@ -69,6 +69,10 @@ def encode(
             assert isinstance(registry, JWSRegistry)
         return serialize_compact(_header, payload, key, algorithms, registry)
 
+def is_mime_type_format(value: str):
+    return isinstance(value, str) and len(value) < 100
+
+    
 
 def decode(
         value: t.Union[bytes, str],
@@ -105,7 +109,7 @@ def decode(
     typ = token.header.get("typ")
     # https://www.rfc-editor.org/rfc/rfc7519#section-5.1
     # If present, it is RECOMMENDED that its value be "JWT".
-    if typ and typ != "JWT":
+    if typ and not is_mime_type_format(typ):
         raise InvalidTypeError()
     return token
 
